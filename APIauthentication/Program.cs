@@ -1,4 +1,4 @@
-using AuthenticationAPI.Repository;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<Services>();
+
+
 
 var app = builder.Build();
 

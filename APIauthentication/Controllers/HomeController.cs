@@ -1,5 +1,6 @@
-﻿using AuthenticationAPI.Models;
-using AuthenticationAPI.Repository;
+﻿using APIauthentication.Helper;
+using AuthenticationAPI.Models;
+
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -7,18 +8,25 @@ namespace AuthenticationAPI.Controllers
 {
     public class HomeController : ControllerBase
     {
-        private readonly Services _services;
-
-        public HomeController(Services services)
+        public HomeController()
         {
-            _services = services;
         }
 
-
-        [HttpPost("login")]
-        public IActionResult login([FromBody] userLogin userLogin)
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody] UserLogin userLogin)
         {
-            return Ok(_services.jwtTokenGeneration(userLogin));
+            var user = UserRepository.ValidateUser(userLogin.Username, userLogin.Password);
+
+            if (user == null)
+                return Unauthorized();
+
+            var token = JwtHelper.GenerateToken(user.Username, user.Role);
+            return Ok(new { token });
+        }
+        public class UserLogin
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
         }
     }
 }
